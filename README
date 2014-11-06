@@ -1,4 +1,10 @@
-high performance epoll-event,25w+ req/sec (without request parse),20w req/sec with request parse on a common pc
+
+ can't run! I'am working!
+
+high performance epoll-event;
+
+based on ohscar
+https://github.com/ohscar/epoll-event
 
 based on ankurs's Poll-Event
 https://github.com/ankurs/Poll-Event
