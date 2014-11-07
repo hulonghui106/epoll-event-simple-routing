@@ -17,12 +17,16 @@
 		1B74F9031A09D6EF0086FA4F /* uthash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uthash.h; path = ../uthash.h; sourceTree = "<group>"; };
 		1B74F9041A09D6F60086FA4F /* debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = debug.h; path = ../debug.h; sourceTree = "<group>"; };
 		1B74F9051A09D6F60086FA4F /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; name = Makefile; path = ../Makefile; sourceTree = "<group>"; };
+		1B81EFC91A0C56270054AEF1 /* client.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = client.c; sourceTree = "<group>"; };
+		1B81EFCA1A0C56270054AEF1 /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		1B81EFCB1A0C56270054AEF1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		1B74F8F51A09D6C80086FA4F = {
 			isa = PBXGroup;
 			children = (
+				1B81EFC81A0C56270054AEF1 /* client */,
 				1B74F9041A09D6F60086FA4F /* debug.h */,
 				1B74F9051A09D6F60086FA4F /* Makefile */,
 				1B74F8FC1A09D6EE0086FA4F /* poll.c */,
@@ -34,6 +38,17 @@
 				1B74F9021A09D6EF0086FA4F /* string.h */,
 				1B74F9031A09D6EF0086FA4F /* uthash.h */,
 			);
+			sourceTree = "<group>";
+		};
+		1B81EFC81A0C56270054AEF1 /* client */ = {
+			isa = PBXGroup;
+			children = (
+				1B81EFC91A0C56270054AEF1 /* client.c */,
+				1B81EFCA1A0C56270054AEF1 /* common.h */,
+				1B81EFCB1A0C56270054AEF1 /* Makefile */,
+			);
+			name = client;
+			path = ../../client;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
