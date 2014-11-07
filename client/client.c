@@ -19,13 +19,13 @@
 int main(int argc, char *argv[])
 {
 
-    char *host="127.0.0.1";
+    char *host="120.24.80.102";
     int port=8080;
     struct sockaddr_in servaddr;
     
     
-    char buf[MAXLINE]="a0001\0a0001\0abcdefg\0";
-    //char buf[MAXLINE]="a0002\0a0001\01234567\0";
+    //char buf[MAXLINE]="a0001\0 a0001\0 abcdefg\0";
+    char buf[MAXLINE]="a0002\0 a0001\0 012\0";
     
     
     int sockfd;

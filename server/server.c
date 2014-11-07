@@ -19,7 +19,7 @@
 void read_cb(int socket_fd,void **data)
 {
     // NOTE -> read is also invoked on accept and connect
-    LOG("in read_cb\n");
+    INFO("in read_cb\n");
     // we just read data and print
     char buf[BUFFSIZE]={0};
     int val = read(socket_fd, buf, BUFFSIZE);
@@ -34,7 +34,7 @@ void read_cb(int socket_fd,void **data)
             int sent=write(dest_fd,buf,dataLen);
             
             if(sent==-1){
-                LOG("sent error\n");
+                INFO("sent error\n");
             }
             else{
                 LOG("sent:%d\n",sent);
@@ -46,7 +46,7 @@ void read_cb(int socket_fd,void **data)
 
 void close_cb(int socket_fd,void *data)
 {
-    LOG("in close_cb\n");
+    INFO("in close_cb\n");
     
     request_remove_fd(data);
     // close the socket, we are done with it
@@ -55,7 +55,7 @@ void close_cb(int socket_fd,void *data)
 
 void accept_cb(int socket_fd)
 {
-    LOG("in accept_cb\n");
+    INFO("in accept_cb\n");
     
     // accept the connection 
     struct sockaddr_in clt_addr;

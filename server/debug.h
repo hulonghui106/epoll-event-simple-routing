@@ -1,16 +1,19 @@
 #ifndef _DEBUG_H
 #define _DEBUG_H
 
+
+
 #ifdef DEBUG
 
 #include<stdio.h>
 
-#define LOG printf
+#define INFO(format) fprintf(stderr, format )
+#define LOG(format, ...) fprintf(stderr, format , __VA_ARGS__)
 
 #else
 
-#define LOG /##/
-
+#define LOG(...)
+#define INFO(...)
 
 #endif // debug
 

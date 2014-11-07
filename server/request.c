@@ -39,7 +39,7 @@ static request_fd_element_t * _nodes;
 
 static request_fd_element_t * request_fd_new(int fd)
 {
-    LOG("request_fd_new\n");
+    INFO("request_fd_new\n");
     
     request_fd_element_t *elem = calloc(1, request_fd_element_s);
     
@@ -55,7 +55,7 @@ static request_fd_element_t * request_fd_new(int fd)
 
 static void request_fd_delete(request_fd_element_t * elem)
 {
-    LOG("request_fd_delete\n");
+    INFO("request_fd_delete\n");
     
     free(elem->name);
     free(elem);
@@ -65,17 +65,17 @@ static void request_fd_delete(request_fd_element_t * elem)
 //--------------public API----------------------------------------
 int request_data_parse(char *buf){
     
-    LOG("request_data_parse\n");
+    INFO("request_data_parse\n");
     
     int strCnt =0;
     
     req.srcName= &buf[0];
     
     strCnt = strlen(req.srcName)+1;
-    req.destName = &buf[strCnt];
+    req.destName = buf+strCnt;
     
     strCnt += strlen(req.destName)+1;
-    req.data = &buf[strCnt];
+    req.data = buf+strCnt;
     
     strCnt += strlen(req.data)+1;
     
@@ -90,7 +90,7 @@ int request_data_parse(char *buf){
 
 void request_save_srcfd_to_hash(int socket_fd,void **data){
     
-    LOG("request_save_srcfd_to_hash\n");
+    INFO("request_save_srcfd_to_hash\n");
     
     request_fd_element_t *p_elem = NULL;
     HASH_FIND_STR(_nodes,req.srcName,p_elem);
@@ -106,7 +106,7 @@ void request_save_srcfd_to_hash(int socket_fd,void **data){
 
 int request_get_destfd_from_hash(void){
     
-    LOG("request_get_destfd_from_hash\n");
+    INFO("request_get_destfd_from_hash\n");
     
     request_fd_element_t *p_elem = NULL;
     
@@ -122,7 +122,7 @@ int request_get_destfd_from_hash(void){
 
 int request_remove_fd(char *name){
     
-    LOG("request_remove_fd\n");
+    INFO("request_remove_fd\n");
     
     request_fd_element_t *p_elem = NULL;
     

@@ -38,7 +38,7 @@ static  event_element_t * _nodes = NULL;
 
 event_element_t * event_element_new(int fd, uint32_t events)
 {
-    LOG("event_element_new\n");
+    INFO("event_element_new\n");
     event_element_t *elem = calloc(1, event_element_s);
     if (elem)
     {
@@ -50,7 +50,7 @@ event_element_t * event_element_new(int fd, uint32_t events)
 
 void event_element_delete(event_element_t * elem)
 {
-    LOG("event_element_delete\n");
+    INFO("event_element_delete\n");
     free(elem);
 }
 
@@ -62,7 +62,7 @@ static event_manager_t event_manager;
 
 event_manager_t * event_manager_init(int timeout)
 {
-    LOG("event_manager_init\n");
+    INFO("event_manager_init\n");
     
     event_manager.timeout = timeout;
     event_manager.epoll_fd = epoll_create(MAX_EVENTS);
@@ -115,7 +115,7 @@ int event_manager_add_element(int fd, uint32_t flags, uint8_t cb_flags)
 int event_manager_remove_element(int fd)
 {
     
-    LOG("event_manager_remove_element\n");
+    INFO("event_manager_remove_element\n");
     
     event_element_t *elem = NULL;
     
@@ -143,7 +143,7 @@ int event_manager_process(void)
     
     if (fds == 0)
     {
-        LOG("event loop timed out\n");
+        INFO("event loop timed out\n");
         event_manager.count++;
     }
     
