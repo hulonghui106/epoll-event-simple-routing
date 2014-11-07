@@ -4,9 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "debug.h"
+#include "poll.h"
 
 #include "request.h"
+#include "debug.h"
+
 #include "uthash.h"
 
 //--------------------------data type-------------------------
@@ -39,7 +41,7 @@ static request_fd_element_t * _nodes;
 
 static request_fd_element_t * request_fd_new(int fd)
 {
-    LOG("request_fd_new\n");
+    INFO("request_fd_new");
     
     request_fd_element_t *elem = calloc(1, request_fd_element_s);
     
@@ -55,7 +57,7 @@ static request_fd_element_t * request_fd_new(int fd)
 
 static void request_fd_delete(request_fd_element_t * elem)
 {
-    LOG("request_fd_delete\n");
+    INFO("request_fd_delete");
     
     free(elem->name);
     free(elem);
@@ -65,40 +67,35 @@ static void request_fd_delete(request_fd_element_t * elem)
 //--------------public API----------------------------------------
 int request_data_parse(char *buf){
     
-    LOG("request_data_parse\n");
+    INFO("request_data_parse");
     
     int strCnt =0;
     
     req.srcName= &buf[0];
     
-    strCnt = strlen(req.srcName)+1;
+    strCnt = strlen(req.srcName);
     req.destName = &buf[strCnt];
     
-    strCnt += strlen(req.destName)+1;
+    strCnt += strlen(req.destName);
     req.data = &buf[strCnt];
     
-    strCnt += strlen(req.data)+1;
-    
-    LOG("%s\n",req.srcName);
-    LOG("%s\n",req.destName);
-    LOG("%s\n",req.data);
-    LOG("%d\n",strCnt);
+    strCnt += strlen(req.data);
     
     return strCnt;
 }
 
 
-void request_save_srcfd_to_hash(int socket_fd,void **data){
+void request_save_srcfd_to_hash(poll_event_element_t *node){
     
-    LOG("request_save_srcfd_to_hash\n");
+    INFO("request_save_srcfd_to_hash");
     
     request_fd_element_t *p_elem = NULL;
     HASH_FIND_STR(_nodes,req.srcName,p_elem);
     
     if (!p_elem){
         
-        p_elem = request_fd_new(socket_fd);
-        *data = p_elem->name;
+        p_elem = request_fd_new(node->fd);
+        node->data = p_elem->name;
         //HASH_ADD_STR(_nodes,req.srcName,p_elem);
         HASH_ADD_KEYPTR( hh, _nodes, p_elem->name, strlen(p_elem->name), p_elem );
     }
@@ -106,7 +103,7 @@ void request_save_srcfd_to_hash(int socket_fd,void **data){
 
 int request_get_destfd_from_hash(void){
     
-    LOG("request_get_destfd_from_hash\n");
+    INFO("request_get_destfd_from_hash");
     
     request_fd_element_t *p_elem = NULL;
     
@@ -122,7 +119,7 @@ int request_get_destfd_from_hash(void){
 
 int request_remove_fd(char *name){
     
-    LOG("request_remove_fd\n");
+    INFO("request_remove_fd");
     
     request_fd_element_t *p_elem = NULL;
     

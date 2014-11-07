@@ -1,4 +1,3 @@
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<sys/epoll.h>
@@ -9,78 +8,95 @@
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include<signal.h>
-
+#include "poll.h"
 #include "debug.h"
-#include "event_manager.h"
 #include "request.h"
-
 #define BUFFSIZE 1024
 
-void read_cb(int socket_fd,void **data)
+void read_cb (poll_event_t * poll_event, poll_event_element_t * node, struct epoll_event ev)
 {
     // NOTE -> read is also invoked on accept and connect
-    LOG("in read_cb\n");
+    INFO("in read_cb");
     // we just read data and print
     char buf[BUFFSIZE]={0};
-    int val = read(socket_fd, buf, BUFFSIZE);
+    int val = read(node->fd, buf, BUFFSIZE);
     if (val>0)
     {
+        // if we actually get data print it
+        //buf[val] = '\0';
+        //LOG(" received data -> %s %t\n", buf,clock());
+        
         int dataLen = request_data_parse(buf);
-        request_save_srcfd_to_hash(socket_fd,data);
+        request_save_srcfd_to_hash(node);
         int dest_fd = request_get_destfd_from_hash();
         
         if (dest_fd != -1) {
             
             int sent=write(dest_fd,buf,dataLen);
             
-            if(sent==-1){
-                LOG("sent error\n");
-            }
-            else{
-                LOG("sent:%d\n",sent);
-            }
+            if(sent==-1)
+                INFO("sent error");
+            else
+                LOG("sent:%d",sent);
         }
     }
 }
 
 
-void close_cb(int socket_fd,void *data)
+void close_cb (poll_event_t * poll_event, poll_event_element_t * node, struct epoll_event ev)
 {
-    LOG("in close_cb\n");
+    INFO("in close_cb");
     
-    request_remove_fd(data);
+    request_remove_fd((char *)(node->data));
+    
     // close the socket, we are done with it
-    event_manager_remove_element(socket_fd);    
+    poll_event_remove(poll_event, node->fd);
+    
 }
 
-void accept_cb(int socket_fd)
+void accept_cb(poll_event_t * poll_event, poll_event_element_t * node, struct epoll_event ev)
 {
-    LOG("in accept_cb\n");
+    INFO("in accept_cb");
     
     // accept the connection 
     struct sockaddr_in clt_addr;
     socklen_t clt_len = sizeof(clt_addr);
-    int listenfd = accept(socket_fd, (struct sockaddr*) &clt_addr, &clt_len);
+    int listenfd = accept(node->fd, (struct sockaddr*) &clt_addr, &clt_len);
     fcntl(listenfd, F_SETFL, O_NONBLOCK);
     //fprintf(stderr, "got the socket %d\n", listenfd);
     
     // set flags to check 
     uint32_t flags = EPOLLIN | EPOLLRDHUP | EPOLLHUP;
+    poll_event_element_t *p;
     
     // add file descriptor to poll event
-    event_manager_add_element( listenfd, flags, 0);
+    poll_event_add(poll_event, listenfd, flags, &p);
     
+    // set function callbacks 
+    p->read_callback = read_cb;
+    p->close_callback = close_cb;
 }
 
-void connect_cb(int socket_fd)
+//time out function 
+int timeout_cb (poll_event_t *poll_event)
 {
+    // just keep a count
+    if (!poll_event->data)
+    {
+        // no count initialised, then initialize it
+        INFO("init timeout counter");
+        poll_event->data=calloc(1,sizeof(int));
+    }
+    else
+    {
+        // increment and print the count
+        int * value = (int*)poll_event->data;
+        *value+=1;
+        //LOG("time out number %d", *value);
+       // printf("tick (%d)\n", *value);
+    }
+    return 0;
 }
-
-void write_cb(int socket_fd)
-{
-}
-
-
 
 int main()
 {
@@ -107,15 +123,20 @@ int main()
     fcntl(sock, F_SETFL, O_NONBLOCK);
 
     // create a poll event object, with time out of 1 sec
-    event_manager_init(1000);
-    
+    poll_event_t *pe = poll_event_new(1000);
+    // set timeout callback
+    pe->timeout_callback = timeout_cb;
+    poll_event_element_t *p;
     // add sock to poll event
-    event_manager_add_element(sock, EPOLLIN, ACCEPT_CB);
- 
+    poll_event_add(pe, sock, EPOLLIN, &p);
+    // set callbacks
+    //p->read_callback = read_cb;
+    p->accept_callback = accept_cb;
+    p->close_callback = close_cb;
+    // enable accept callback
+    p->cb_flags |= ACCEPT_CB;
     // start the event loop
-    while(1){
-        event_manager_process();
-    }
+    use_the_force(pe);
 
     return 0;
 }

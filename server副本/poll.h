@@ -1,8 +1,8 @@
 #ifndef _POLL_H
 #define _POLL_H
 
-#include "uthash.h"
 #include <sys/epoll.h>
+
 
 #define MAX_EVENTS 100
 #define CALLBACK(x) void (*x) (poll_event_t *, poll_event_element_t *, struct epoll_event)

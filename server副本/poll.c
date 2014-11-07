@@ -1,5 +1,4 @@
-#include "poll.h"
-#include "debug.h"
+
 #include <stdlib.h>
 #include <sys/epoll.h>
 #include <fcntl.h>
@@ -7,6 +6,36 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <unistd.h>
+
+#include "poll.h"
+#include "debug.h"
+
+#include "uthash.h"
+
+struct poll_event_element
+{
+    /** the file descriptor*/
+    int fd;
+    /** callback for write */
+    CALLBACK(write_callback);
+    /** callback for read */
+    CALLBACK(read_callback);
+    /** callback for close */
+    CALLBACK(close_callback);
+    /** callback for accept */
+    CALLBACK(accept_callback);
+    /** callback for connect */
+    CALLBACK(connect_callback);
+    /** user data for this element*/
+    void * data;
+    /** epoll events flags */
+    uint32_t events;
+    /** the event for which callback was initiated */
+    uint32_t cur_event;
+    /** only used to enable accept and listen callbacks */
+    uint8_t cb_flags;
+    UT_hash_handle hh;
+};
 
 
  static  poll_event_element_t * _nodes;

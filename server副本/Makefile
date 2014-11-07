@@ -9,7 +9,7 @@ CFLAGS = -Wall -O2
 endif
 
 #name all the object files
-OBJS = server.o  event_manager.o request.o
+OBJS = server.o  poll.o request.o string.o 
 
 all : epoll
 

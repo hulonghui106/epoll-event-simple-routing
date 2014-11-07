@@ -14,93 +14,51 @@
 #include <time.h>
 #include "common.h"
 
-void connect_flood(int loop)
+
+
+int main(int argc, char *argv[])
 {
+
     char *host="127.0.0.1";
     int port=8080;
     struct sockaddr_in servaddr;
+    
+    
+    char buf[MAXLINE]="a0001\0a0001\0abcdefg\0";
+    //char buf[MAXLINE]="a0002\0a0001\01234567\0";
+    
+    
     int sockfd;
     
-    time_t start=clock();
-    int i;
-    for(i=0;i<loop;i++)
-	{
-	    sockfd = Socket(AF_INET, SOCK_STREAM, 0);
-
-	    bzero(&servaddr, sizeof(servaddr));
-	    servaddr.sin_family = AF_INET;
-	    servaddr.sin_addr.s_addr = inet_addr(host);
-            servaddr.sin_port = htons(port);
-
-	    Connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
-	    close(sockfd);
-	}
-    time_t end=clock();
-    double cost=(end-start)/CLOCKS_PER_SEC;
-    printf("connect:%d,cost %lf sec\n",loop,cost);
-}
-
-void request_flood(int loop)
-{
-    char *host="127.0.0.1";
-    int port=8080;
-    struct sockaddr_in servaddr;
-    char *split="\r\n";
-    char *cmd="GET";
-
-    char buf[MAXLINE]="asdfalllllllllllllkasdfsahid";
-    char msg[MAXLINE];
-    
-    strcpy(msg,cmd);
-
-    strcat(msg,split);
-    char c[32]={0};
-    sprintf(c,"%d",strlen(buf));
-
-    strcat(msg,c);
-    strcat(msg,split);
-    strcat(msg,buf);
-    msg[strlen(msg)]='\0';
-
-    int sockfd;
-    
-/* ============sockfd============ */
+    /* ============sockfd============ */
     sockfd = Socket(AF_INET, SOCK_STREAM, 0);
-
+    
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = inet_addr(host);
     servaddr.sin_port = htons(port);
-/* ============connect============ */
+    /* ============connect============ */
     Connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
     
-/* =========stress testing======== */
-    int i=0;
-    time_t start=clock();
+    /* =========stress testing======== */
     
-    for(;i<loop;i++)
+    if(write(sockfd,buf,20)==-1){
+        printf("write error\n");
+    }
+    
+    
+    while(1)
     {
-        if(write(sockfd,msg,sizeof(msg))==-1){
-            printf("\n** write_1**\n");
+        int length = read(sockfd, buf, MAXLINE);
+        
+        if (length>0) {
+            break;
         }
-    
-    }
-    
-    time_t end=clock();
-    double cost=(double)(end-start)/CLOCKS_PER_SEC;
-    printf("request:%d,costed:%lf sec\n",loop,cost);
-}
-
-int main(int argc, char *argv[])
-{
-    if(argc<2)
-    {
-	printf("pls put loop num\n");
-	exit(0);
+       
     }
 
-   request_flood(atoi(argv[1]));
-   // connect_flood(atoi(argv[1]));
+    printf("return %s\n",buf+13);
+   
 
     return 0;  
 }
