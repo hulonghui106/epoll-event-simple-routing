@@ -20,12 +20,12 @@ int main(int argc, char *argv[])
 {
 
     char *host="120.24.80.102";
-    int port=8080;
+    int port=5372;
     struct sockaddr_in servaddr;
     
     
     //char buf[MAXLINE]="a0001\0 a0001\0 abcdefg\0";
-    char buf[MAXLINE]="a0002\0 a0001\0 012\0";
+    char buf[MAXLINE]="0000000001000000000201276878898932994324234325435sdfdsf";
     
     
     int sockfd;
@@ -42,9 +42,11 @@ int main(int argc, char *argv[])
     
     /* =========stress testing======== */
     
-    if(write(sockfd,buf,20)==-1){
+    if(write(sockfd,buf,strlen(buf))==-1){
         printf("write error\n");
     }
+    
+     printf("write %lu\n",strlen(buf));
     
     
     while(1)
@@ -57,7 +59,7 @@ int main(int argc, char *argv[])
        
     }
 
-    printf("return %s\n",buf+13);
+    printf("return %s\n",buf+20);
    
 
     return 0;  

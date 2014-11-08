@@ -26,18 +26,21 @@ void read_cb(int socket_fd,void **data)
     if (val>0)
     {
         int dataLen = request_data_parse(buf);
-        request_save_srcfd_to_hash(socket_fd,data);
-        int dest_fd = request_get_destfd_from_hash();
-        
-        if (dest_fd != -1) {
+        if(dataLen > 0){
             
-            int sent=write(dest_fd,buf,dataLen);
+            request_save_srcfd_to_hash(socket_fd,data);
+            int dest_fd = request_get_destfd_from_hash();
             
-            if(sent==-1){
-                INFO("sent error\n");
-            }
-            else{
-                LOG("sent:%d\n",sent);
+            if (dest_fd != -1) {
+                
+                int sent=write(dest_fd,buf,dataLen);
+                
+                if(sent==-1){
+                    INFO("sent error\n");
+                }
+                else{
+                    LOG("sent:%d\n",sent);
+                }
             }
         }
     }
@@ -98,7 +101,7 @@ int main()
     memset(&svr_addr, 0 , sizeof(svr_addr));
     svr_addr.sin_family = AF_INET;
     svr_addr.sin_addr.s_addr = htons(INADDR_ANY); //自动获得本机IP
-    svr_addr.sin_port = htons(8080);  //端口设置为8080
+    svr_addr.sin_port = htons(5372);  //端口设置为8080
 
     bind(sock, (struct sockaddr *) &svr_addr, sizeof(svr_addr));
     listen(sock, 10);

@@ -11,8 +11,8 @@
 
 //--------------------------data type-------------------------
 struct request{
-    char *srcName;
-    char *destName;
+    char srcName[12];
+    char destName[12];
     char *data;
 };
 
@@ -67,23 +67,26 @@ int request_data_parse(char *buf){
     
     INFO("request_data_parse\n");
     
-    int strCnt =0;
+    //LOG("%s\n",buf);
+    if (strlen(buf)<22) {
+        return -1;
+    }
     
-    req.srcName= &buf[0];
+    strncpy(req.srcName,buf,10);
+    req.srcName[10]='\0';
     
-    strCnt = strlen(req.srcName)+1;
-    req.destName = buf+strCnt;
+    strncpy(req.destName,&buf[10],10);
+    req.destName[10]='\0';
+
+    req.data = &buf[20];
     
-    strCnt += strlen(req.destName)+1;
-    req.data = buf+strCnt;
-    
-    strCnt += strlen(req.data)+1;
+    int strCnt = strlen(req.data)+21;
     
     LOG("%s\n",req.srcName);
     LOG("%s\n",req.destName);
     LOG("%s\n",req.data);
     LOG("%d\n",strCnt);
-    
+  
     return strCnt;
 }
 
