@@ -19,7 +19,7 @@
 int main(int argc, char *argv[])
 {
 
-    char *host="120.24.80.102";
+    char *host="127.0.0.1";
     int port=5372;
     struct sockaddr_in servaddr;
     
