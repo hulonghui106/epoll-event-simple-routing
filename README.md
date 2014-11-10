@@ -1,7 +1,7 @@
-
-简单的数据通信协议
+简单的数据路由协议
 ===============
-采用异步方式实现，高性能，实时。
+采用异步方式实现，高并发，实时。
+请注意，还处于测试阶段
 
 数据通信格式：[自身名字][对方名字][要发送的数据]
 ------------------
@@ -12,7 +12,7 @@
 技术介绍
 -------
 .使用TCP长连接，实现client间的数据通信.
-.使用epoll,及uthash,达到实时响应的目的
+.使用epoll,及uthash,达到实时的目的
 
 参考的项目
 --------
@@ -25,5 +25,3 @@ https://github.com/ankurs/Poll-Event
 下载方法
 -------
 git clone https://github.com/hulonghui106/epoll-event-simple-routing.git
-
-
