@@ -23,6 +23,7 @@ void read_cb(int socket_fd,void **data)
     // we just read data and print
     char buf[BUFFSIZE]={0};
     int val = read(socket_fd, buf, BUFFSIZE);
+    
     if (val>0)
     {
         int dataLen = request_data_parse(buf);
@@ -44,6 +45,7 @@ void read_cb(int socket_fd,void **data)
             }
         }
     }
+
 }
 
 
@@ -75,6 +77,7 @@ void accept_cb(int socket_fd)
     
 }
 
+/*
 void connect_cb(int socket_fd)
 {
 }
@@ -82,8 +85,7 @@ void connect_cb(int socket_fd)
 void write_cb(int socket_fd)
 {
 }
-
-
+*/
 
 int main()
 {

@@ -13,7 +13,8 @@ void read_cb(int socket_fd,void **data);
 void close_cb(int socket_fd,void *data);
 void accept_cb(int socket_fd);
 
+/*
 void connect_cb(int socket_fd);
 void write_cb(int socket_fd);
-
+*/
 #endif /* defined(__poll__server__) */

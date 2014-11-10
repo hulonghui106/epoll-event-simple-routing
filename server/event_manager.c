@@ -138,12 +138,12 @@ int event_manager_process(void)
 {
     struct epoll_event events[MAX_EVENTS];
     
-    LOG("May the source be with you!!%d\n",event_manager.count);
+    //LOG("May the source be with you!!%d\n",event_manager.count);
     int fds = epoll_wait(event_manager.epoll_fd, events, MAX_EVENTS, event_manager.timeout);
     
     if (fds == 0)
     {
-        INFO("event loop timed out\n");
+        //INFO("event loop timed out\n");
         event_manager.count++;
     }
     
@@ -164,14 +164,15 @@ int event_manager_process(void)
                 if (value->cb_flags & ACCEPT_CB)
                     accept_cb(value->fd);
                 
+/*
                 /// connect callback if flag set
                 if (value->cb_flags & CONNECT_CB)
                     connect_cb(value->fd);
-                
+*/
                 /// read callback in any case
                 read_cb(value->fd,&(value->data));
             }
-#if 0
+/*
             // when write possible
             if (events[i].events & EPOLLOUT)
             {
@@ -181,7 +182,7 @@ int event_manager_process(void)
                     write_cb(value->fd);
                 }
             }
-#endif
+*/
             // shutdown or error
             if ( (events[i].events & EPOLLRDHUP) || (events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP))
             {                
