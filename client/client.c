@@ -19,13 +19,17 @@
 int main(int argc, char *argv[])
 {
 
-    char *host="127.0.0.1";
+    char *host="120.24.80.102";
     int port=5372;
     struct sockaddr_in servaddr;
     
     
     //char buf[MAXLINE]="a0001\0 a0001\0 abcdefg\0";
-    char buf[MAXLINE]="0000000001000000000201276878898932994324234325435sdfdsf";
+    char buf[MAXLINE];//="0000000002000000000101276878898932994324234325435sdfdsf";
+    
+    //char srcName[12];
+    //char destName[12];
+    //char sendMsg[50];
     
     
     int sockfd;
@@ -41,25 +45,41 @@ int main(int argc, char *argv[])
     Connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
     
     /* =========stress testing======== */
+    //write
+    //printf("please input srcName:");
+    //scanf("%s",srcName);
     
-    if(write(sockfd,buf,strlen(buf))==-1){
-        printf("write error\n");
-    }
-    
-     printf("write %lu\n",strlen(buf));
-    
-    
+    //printf("please input destName:");
+    //scanf("%s",destName);
+    int count =0;
     while(1)
     {
+
+        
+        //printf("please input message:");
+        //scanf("%s",sendMsg);
+        sleep(5);
+        strncpy(buf,argv[1],10);
+        strncpy(buf+10,argv[2],10);
+        strcpy(buf+20,argv[3]);
+        
+        if(write(sockfd,buf,strlen(buf))==-1){
+            printf("write error\n");
+        }
+        
+        printf("write %d\n",count++);
+        
+        //read
+        
         int length = read(sockfd, buf, MAXLINE);
         
         if (length>0) {
-            break;
+            printf("return %s\n",buf+20);
         }
        
-    }
 
-    printf("return %s\n",buf+20);
+       
+    }
    
 
     return 0;  
